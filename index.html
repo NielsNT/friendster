@@ -10,7 +10,7 @@
 <style>
   :root {
     --bg: #14101F; --surface: #201A31; --line: #352D4E;
-    --accent: #FFB84D; --text: #F5EFE6; --muted: #8D84A6;
+    --accent: #FFB84D; --text: #F5EFE6; --muted: #8D84A6; --vinyl: #0B0812;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
@@ -18,37 +18,32 @@
     background: var(--bg); color: var(--text);
     font-family: 'Outfit', system-ui, sans-serif;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 16px; padding: 20px; text-align: center;
+    gap: 18px; padding: 20px; text-align: center;
   }
   .eyebrow { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: .22em; color: var(--accent); }
+  h1 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: clamp(26px, 7vw, 38px); line-height: 1.05; }
+  h1 .q { color: var(--accent); }
 
-  /* --- de mysteriekaart: zelfde stijl als de geprinte kaartjes --- */
-  .card {
-    width: min(64vw, 230px); height: min(64vw, 230px);
-    border-radius: 18px; position: relative;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.55);
-    color: #000;
+  /* de LP: draait zodra er muziek speelt */
+  .vinyl {
+    width: min(56vw, 230px); height: min(56vw, 230px);
+    border-radius: 50%; position: relative;
+    background: radial-gradient(circle at center, var(--accent) 0 18%, var(--vinyl) 18.5% 100%);
+    box-shadow: 0 0 0 1px var(--line), 0 18px 50px rgba(0,0,0,.55), inset 0 0 40px rgba(0,0,0,.6);
   }
-  .card .q { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 96px; line-height: 1; }
-  .card .sub { font-size: 13px; font-weight: 700; opacity: .75; }
-  .card .brand {
-    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-    font-size: 10px; font-weight: 700; letter-spacing: .2em;
-    border: 1.5px solid #000; border-radius: 999px; padding: 3px 10px;
+  .vinyl::before {
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: repeating-radial-gradient(circle at center, transparent 0 6px, rgba(255,255,255,.05) 6px 7px);
+    -webkit-mask: radial-gradient(circle at center, transparent 0 19%, #000 20%);
+            mask: radial-gradient(circle at center, transparent 0 19%, #000 20%);
   }
-  /* equalizer verschijnt tijdens het spelen */
-  .eq { display: none; align-items: flex-end; gap: 7px; height: 84px; }
-  .eq i { width: 12px; background: #000; border-radius: 3px; animation: eq .8s ease-in-out infinite alternate; }
-  .eq i:nth-child(1) { animation-delay: 0s; height: 30%; }
-  .eq i:nth-child(2) { animation-delay: .15s; height: 80%; }
-  .eq i:nth-child(3) { animation-delay: .3s; height: 55%; }
-  .eq i:nth-child(4) { animation-delay: .1s; height: 95%; }
-  .eq i:nth-child(5) { animation-delay: .25s; height: 45%; }
-  @keyframes eq { to { transform: scaleY(.35); } }
-  @media (prefers-reduced-motion: reduce) { .eq i { animation: none; } }
-  .playing .eq { display: flex; }
-  .playing .q, .playing .sub { display: none; }
+  .vinyl::after {  /* muzieknootje op het label */
+    content: "\266a"; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-52%); font-size: 30px; color: var(--vinyl);
+  }
+  .spinning { animation: spin 2.2s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinning { animation: none; } }
 
   .time { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 22px; color: var(--accent); min-height: 28px; }
 
@@ -76,11 +71,7 @@
   .started .ring { display: none; }
   .started .cover { border-right-color: var(--line); }
 
-  .btn { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 12px; font: 500 15px 'Outfit', sans-serif; padding: 11px 16px; cursor: pointer; }
-  .btn:active { background: var(--line); }
-  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  .note { font-size: 13px; color: var(--muted); max-width: 330px; }
-  .warn { color: var(--accent); }
+  .hint { font-size: 13px; color: var(--muted); max-width: 320px; }
   .err { color: #FF8A7A; font-size: 14px; max-width: 340px; }
   #log { position: fixed; bottom: 0; left: 0; right: 0; max-height: 30vh; overflow: auto; background: #000; color: #7CFC9A; font: 11px monospace; text-align: left; padding: 8px; z-index: 99; }
 
@@ -104,13 +95,6 @@
     logEl.textContent += m + "\n"; logEl.scrollTop = 1e9;
   }
   window.addEventListener('error', e => log('JS-fout: ' + e.message));
-
-  // zelfde kleurverlopen als de geprinte kaartjes; willekeurig per ronde
-  const GRADIENTS = [
-    ['#7B2FBE','#B24BD8'], ['#F5D63D','#F0A93B'], ['#E0218A','#F06292'],
-    ['#2E9BD6','#4FC3F7'], ['#5FD3BC','#A8E6CF'], ['#F26430','#F58F5D'],
-    ['#43B649','#8BC34A'], ['#E53950','#EF7350']
-  ];
 
   function parseTrackId(v) {
     v = decodeURIComponent((v || '').trim());
@@ -141,15 +125,10 @@
     return;
   }
 
-  const [g1, g2] = GRADIENTS[Math.floor(Math.random() * GRADIENTS.length)];
   app.innerHTML = `
     <div class="eyebrow">FRIENDSTER</div>
-    <div class="card" id="card" style="background:linear-gradient(135deg, ${g1}, ${g2})">
-      <div class="q">?</div>
-      <div class="sub">wie &middot; wat &middot; wanneer</div>
-      <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="brand">MYSTERY TRACK</div>
-    </div>
+    <h1>Mystery <span class="q">Track</span></h1>
+    <div class="vinyl" id="disc"></div>
     <div class="time" id="time">&nbsp;</div>
     <p class="instruct" id="instruct">&#9660; Tik op de play-knop om te starten</p>
     <div class="dock" id="dock">
@@ -157,18 +136,16 @@
       <div class="cover"><span>&#128584;</span><span>geheim, niet spieken</span></div>
       <div class="ring"></div>
     </div>
-    <button class="btn" id="restart">&#8634; Naar startpunt (${fmt(startSec)})</button>
-    <p class="note" id="note">Springt automatisch naar ${fmt(startSec)} zodra het speelt.</p>
+    <p class="hint">Wie &middot; wat &middot; wanneer &mdash; raden maar!</p>
     <p class="err" id="err" hidden></p>
   `;
-  app.style.cssText += 'display:flex;flex-direction:column;align-items:center;gap:14px;';
+  app.style.cssText += 'display:flex;flex-direction:column;align-items:center;gap:16px;';
 
-  const card = document.getElementById('card');
+  const disc = document.getElementById('disc');
   const timeEl = document.getElementById('time');
   const errEl = document.getElementById('err');
   const dock = document.getElementById('dock');
   const instruct = document.getElementById('instruct');
-  const note = document.getElementById('note');
   function showErr(m) { errEl.textContent = m; errEl.hidden = false; }
 
   let controller = null;
@@ -197,20 +174,14 @@
           const dur = (d.duration || 0) / 1000;
           log('upd paused=' + d.isPaused + ' pos=' + pos.toFixed(1) + ' dur=' + dur.toFixed(0));
 
-          // previewmodus (niet ingelogd): nummer duurt ~30s, springen kan niet ver
+          // stille previewdetectie: alleen om een spring-loop te voorkomen
           if (previewMode === null && dur > 0) {
             previewMode = dur < 35;
-            if (previewMode) {
-              needsSeek = false;
-              note.innerHTML = '<span class="warn">&#9888; Previewmodus (30 sec).</span> Log in de browser in bij open.spotify.com voor het hele nummer.';
-              log('previewmodus gedetecteerd');
-            } else if (startSec > dur - 20) {
-              startSec = Math.max(0, Math.floor(dur * 0.4));   // vangnet bij gek startpunt
-              log('startpunt ingekort naar ' + startSec);
-            }
+            if (previewMode) { needsSeek = false; log('previewmodus'); }
+            else if (startSec > dur - 20) { startSec = Math.max(0, Math.floor(dur * 0.4)); log('startpunt ingekort naar ' + startSec); }
           }
 
-          card.classList.toggle('playing', !d.isPaused);
+          disc.classList.toggle('spinning', !d.isPaused);
           timeEl.textContent = fmt(pos);
           if (!d.isPaused && !started) {
             started = true;
@@ -219,12 +190,10 @@
             instruct.style.color = 'var(--muted)';
           }
 
-          // maximaal 2 voorzichtige sprongen, minstens 2 s uit elkaar — nooit een spring-loop
           const now = Date.now();
           if (needsSeek && !d.isPaused && pos < startSec - 2 && seekTries < 2 && now - lastSeek > 2000) {
             seekTries++; lastSeek = now;
-            try { controller.seek(startSec); log('seek #' + seekTries + ' naar ' + startSec); }
-            catch (err) { log('seek faalde: ' + err); }
+            try { controller.seek(startSec); log('seek #' + seekTries); } catch (err) { log('seek faalde: ' + err); }
           }
           if (pos >= startSec - 2 || seekTries >= 2) needsSeek = false;
         });
@@ -236,12 +205,6 @@
       }
     );
   };
-
-  document.getElementById('restart').addEventListener('click', () => {
-    if (!controller || previewMode) return;
-    needsSeek = false; seekTries = 2;
-    try { controller.seek(startSec); log('restart-seek'); } catch (e) { log('restart faalde: ' + e); }
-  });
 })();
 </script>
 </body>
