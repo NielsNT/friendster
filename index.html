@@ -9,265 +9,150 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #14101F;
-    --surface: #201A31;
-    --line: #352D4E;
-    --accent: #FFB84D;
-    --accent-deep: #E0902A;
-    --text: #F5EFE6;
-    --muted: #8D84A6;
-    --vinyl: #0B0812;
+    --bg: #14101F; --surface: #201A31; --line: #352D4E;
+    --accent: #FFB84D; --text: #F5EFE6; --muted: #8D84A6; --vinyl: #0B0812;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: 'Outfit', system-ui, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 28px;
-    padding: 24px;
-    text-align: center;
-    overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; padding: 20px 20px 130px; text-align: center; overflow: hidden;
   }
-  .eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 500;
-  }
-  h1 {
-    font-family: 'Bricolage Grotesque', sans-serif;
-    font-weight: 800;
-    font-size: clamp(28px, 8vw, 42px);
-    line-height: 1.05;
-    margin-top: 6px;
-  }
+  .eyebrow { font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  h1 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: clamp(26px, 7vw, 38px); line-height: 1.05; margin-top: 4px; }
   h1 .q { color: var(--accent); }
 
-  /* --- Vinyl play button (het geheime nummer) --- */
-  .vinyl-wrap { position: relative; }
   .vinyl {
-    width: min(62vw, 260px);
-    height: min(62vw, 260px);
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    background:
-      radial-gradient(circle at center,
-        var(--accent) 0 18%,
-        var(--vinyl) 18.5% 100%);
-    box-shadow:
-      0 0 0 1px var(--line),
-      0 18px 50px rgba(0,0,0,0.55),
-      inset 0 0 40px rgba(0,0,0,0.6);
-    position: relative;
+    width: min(56vw, 230px); height: min(56vw, 230px);
+    border-radius: 50%; border: none; cursor: pointer; position: relative;
+    background: radial-gradient(circle at center, var(--accent) 0 18%, var(--vinyl) 18.5% 100%);
+    box-shadow: 0 0 0 1px var(--line), 0 18px 50px rgba(0,0,0,.55), inset 0 0 40px rgba(0,0,0,.6);
     -webkit-tap-highlight-color: transparent;
   }
-  /* grooves */
   .vinyl::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: 50%;
-    background: repeating-radial-gradient(circle at center,
-      transparent 0 6px,
-      rgba(255,255,255,0.05) 6px 7px);
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: repeating-radial-gradient(circle at center, transparent 0 6px, rgba(255,255,255,.05) 6px 7px);
     -webkit-mask: radial-gradient(circle at center, transparent 0 19%, #000 20%);
             mask: radial-gradient(circle at center, transparent 0 19%, #000 20%);
     pointer-events: none;
   }
-  /* play / pause glyph op het label */
-  .vinyl .glyph {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--vinyl);
-    font-size: 26px;
-    line-height: 1;
-    pointer-events: none;
-  }
-  .vinyl .glyph .play-icon {
-    display: inline-block;
-    width: 0; height: 0;
-    border-left: 22px solid var(--vinyl);
-    border-top: 14px solid transparent;
-    border-bottom: 14px solid transparent;
-    margin-left: 5px;
-  }
-  .vinyl .glyph .pause-icon {
-    display: none;
-    width: 22px; height: 28px;
-    border-left: 8px solid var(--vinyl);
-    border-right: 8px solid var(--vinyl);
-  }
-  .spinning { animation: spin 2.2s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) {
-    .spinning { animation: none; }
-  }
+  .vinyl .glyph { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+  .vinyl .play-icon { display: inline-block; width: 0; height: 0; border-left: 20px solid var(--vinyl); border-top: 13px solid transparent; border-bottom: 13px solid transparent; margin-left: 5px; }
+  .vinyl .pause-icon { display: none; width: 20px; height: 26px; border-left: 7px solid var(--vinyl); border-right: 7px solid var(--vinyl); }
   .playing .play-icon { display: none; }
   .playing .pause-icon { display: inline-block; }
+  .spinning { animation: spin 2.2s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinning { animation: none; } }
 
-  .time {
-    font-family: 'Bricolage Grotesque', sans-serif;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    font-size: 22px;
-    color: var(--accent);
-    min-height: 28px;
-  }
-  .chip {
-    display: inline-block;
-    font-size: 13px;
-    color: var(--muted);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 6px 14px;
-  }
-  .restart {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    padding: 12px 20px;
-    cursor: pointer;
-  }
+  .time { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 20px; color: var(--accent); min-height: 26px; }
+  .chip { display: inline-block; font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; }
+  .restart { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 12px; font: 500 15px 'Outfit', sans-serif; padding: 11px 18px; cursor: pointer; }
   .restart:active { background: var(--line); }
   button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-
   .hint { font-size: 13px; color: var(--muted); max-width: 320px; }
-
-  /* Spotify embed: aanwezig maar volledig afgedekt */
-  .embed-cage {
-    position: fixed;
-    bottom: 0; left: 0;
-    width: 320px; height: 80px;
-    overflow: hidden;
-    opacity: 0.02;          /* technisch zichtbaar, praktisch onzichtbaar */
-    pointer-events: none;   /* niet aanklikbaar, dus ook niet per ongeluk */
-    z-index: -1;
-  }
-
-  /* Setup-scherm (geen track-parameter) */
-  .setup {
-    max-width: 420px;
-    text-align: left;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 24px;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-  .setup h2 { font-family: 'Bricolage Grotesque', sans-serif; margin-bottom: 10px; }
-  .setup code {
-    display: block;
-    background: var(--bg);
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin: 10px 0;
-    font-size: 13px;
-    color: var(--accent);
-    word-break: break-all;
-  }
-  .setup a { color: var(--accent); }
   .err { color: #FF8A7A; font-size: 14px; max-width: 340px; }
+
+  /* --- Spotify embed onderaan, met 'niet spieken'-afdekking --- */
+  .dock {
+    position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+    width: min(92vw, 380px); height: 80px; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  }
+  .dock .cover {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    width: 100%;                      /* dekt alles af; in fallback-modus smaller */
+    background: var(--surface);
+    border: 1px solid var(--line); border-right: none;
+    border-radius: 14px 0 0 14px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; color: var(--muted); z-index: 2; pointer-events: auto;
+    transition: width .3s ease;
+  }
+  .dock.exposed .cover { width: calc(100% - 84px); }   /* alleen de play-knop van Spotify blijft vrij */
+  .dock.exposed .cover .tap { color: var(--accent); font-weight: 700; }
+  .arrow { display: none; }
+  .dock.exposed .arrow {
+    display: inline-block; color: var(--accent); font-size: 20px;
+    animation: nudge 1s ease-in-out infinite;
+  }
+  @keyframes nudge { 50% { transform: translateX(5px); } }
+  @media (prefers-reduced-motion: reduce) { .dock.exposed .arrow { animation: none; } }
+
+  .setup { max-width: 420px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; font-size: 15px; line-height: 1.6; }
+  .setup h2 { font-family: 'Bricolage Grotesque', sans-serif; margin-bottom: 10px; }
+  .setup code { display: block; background: var(--bg); border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 13px; color: var(--accent); word-break: break-all; }
+  .setup a { color: var(--accent); }
 </style>
 </head>
 <body>
 
 <main id="app"></main>
-<div class="embed-cage"><div id="embed"></div></div>
+<div class="dock" id="dock" hidden>
+  <div id="embed"></div>
+  <div class="cover"><span>&#128584;</span><span id="coverTxt">verborgen speler</span><span class="arrow">&#10142;</span></div>
+</div>
 
 <script>
 (function () {
   const params = new URLSearchParams(location.search);
-  const rawTrack = params.get('track') || '';
-  const rawStart = params.get('start') || '0';
   const app = document.getElementById('app');
 
-  // --- track-ID uit parameter halen (accepteert ID, open.spotify.com-URL of spotify:track:URI)
   function parseTrackId(v) {
-    v = decodeURIComponent(v.trim());
-    let m = v.match(/track[\/:]([A-Za-z0-9]{22})/);
+    v = decodeURIComponent((v || '').trim());
+    const m = v.match(/track[\/:]([A-Za-z0-9]{22})/);
     if (m) return m[1];
-    if (/^[A-Za-z0-9]{22}$/.test(v)) return v;
-    return null;
+    return /^[A-Za-z0-9]{22}$/.test(v) ? v : null;
   }
-
-  // --- starttijd: "83" (seconden) of "1:23"
   function parseStart(v) {
-    v = v.trim();
-    if (/^\d+:\d{1,2}$/.test(v)) {
-      const [m, s] = v.split(':').map(Number);
-      return m * 60 + s;
-    }
-    const n = parseInt(v, 10);
-    return isNaN(n) ? 0 : Math.max(0, n);
+    v = (v || '0').trim();
+    if (/^\d+:\d{1,2}$/.test(v)) { const [m, s] = v.split(':').map(Number); return m * 60 + s; }
+    const n = parseInt(v, 10); return isNaN(n) ? 0 : Math.max(0, n);
   }
+  function fmt(sec) { sec = Math.max(0, Math.floor(sec)); return Math.floor(sec/60) + ':' + String(sec%60).padStart(2,'0'); }
 
-  function fmt(sec) {
-    sec = Math.max(0, Math.floor(sec));
-    return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
-  }
+  const trackId = parseTrackId(params.get('track'));
+  const startSec = parseStart(params.get('start'));
 
-  const trackId = parseTrackId(rawTrack);
-  const startSec = parseStart(rawStart);
-
-  // --- Geen (geldige) track? Toon uitleg. ---
   if (!trackId) {
     app.innerHTML = `
       <div class="setup">
-        <h2>Hitster-speler</h2>
-        <p>Open deze pagina met een <strong>track</strong>- en <strong>start</strong>-parameter in de link:</p>
+        <h2>Friendster-speler</h2>
+        <p>Open deze pagina met een <strong>track</strong>- en <strong>start</strong>-parameter:</p>
         <code>?track=SPOTIFY_TRACK_ID&amp;start=45</code>
         <p>Voorbeeld (Coldplay – Yellow, vanaf 0:42):</p>
         <code><a href="?track=3AJwUDP919kvQ9QcozQPxg&start=42">?track=3AJwUDP919kvQ9QcozQPxg&amp;start=42</a></code>
-        <p><strong>start</strong> mag in seconden (<code style="display:inline;padding:2px 6px">45</code>) of als <code style="display:inline;padding:2px 6px">1:23</code>.</p>
       </div>`;
     return;
   }
 
-  // --- Speler-UI ---
   app.innerHTML = `
     <div>
-      <div class="eyebrow">Hitster &middot; Ronde</div>
+      <div class="eyebrow">Friendster &middot; Ronde</div>
       <h1>Mystery <span class="q">Track</span></h1>
     </div>
-    <div class="vinyl-wrap">
-      <button class="vinyl" id="disc" aria-label="Afspelen of pauzeren">
-        <span class="glyph"><span class="play-icon"></span><span class="pause-icon"></span></span>
-      </button>
-    </div>
+    <button class="vinyl" id="disc" aria-label="Afspelen of pauzeren">
+      <span class="glyph"><span class="play-icon"></span><span class="pause-icon"></span></span>
+    </button>
     <div class="time" id="time">&nbsp;</div>
     <span class="chip">Start bij ${fmt(startSec)}</span>
     <button class="restart" id="restart">&#8634; Opnieuw vanaf startpunt</button>
     <p class="hint">Titel en artiest blijven verborgen. Niet spieken &#128584;</p>
     <p class="err" id="err" hidden></p>
   `;
-  // flexbox-gap netjes verdelen
-  app.style.display = 'flex';
-  app.style.flexDirection = 'column';
-  app.style.alignItems = 'center';
-  app.style.gap = '20px';
+  app.style.cssText += 'display:flex;flex-direction:column;align-items:center;gap:16px;';
 
   const disc = document.getElementById('disc');
   const timeEl = document.getElementById('time');
   const errEl = document.getElementById('err');
+  const dock = document.getElementById('dock');
+  const coverTxt = document.getElementById('coverTxt');
 
-  let controller = null;
-  let isPaused = true;
-  let needsSeek = true;   // eerste keer afspelen: naar startpunt springen
-  let ready = false;
+  let controller = null, ready = false;
+  let isPaused = true, everPlayed = false, needsSeek = true, watchdog = null;
 
-  // Spotify iFrame API laden
   const s = document.createElement('script');
   s.src = 'https://open.spotify.com/embed/iframe-api/v1';
   s.async = true;
@@ -275,56 +160,65 @@
   document.body.appendChild(s);
 
   function showErr(msg) { errEl.textContent = msg; errEl.hidden = false; }
+  function exposeNativePlay() {
+    dock.hidden = false;
+    dock.classList.add('exposed');
+    coverTxt.innerHTML = 'tik op de <span class="tap">play-knop</span>';
+  }
 
   window.onSpotifyIframeApiReady = (IFrameAPI) => {
     IFrameAPI.createController(
       document.getElementById('embed'),
-      { uri: 'spotify:track:' + trackId, width: 300, height: 80 },
+      { uri: 'spotify:track:' + trackId, width: '100%', height: 80 },
       (EmbedController) => {
-        controller = EmbedController;
-        ready = true;
+        controller = EmbedController; ready = true;
+        dock.hidden = false;   // speler staat onderin, volledig afgedekt
 
         controller.addListener('playback_update', (e) => {
-          const d = e.data;
-          if (!d) return;
+          const d = e.data; if (!d) return;
           isPaused = d.isPaused;
+          if (!isPaused) {
+            everPlayed = true;
+            clearTimeout(watchdog);
+            dock.classList.remove('exposed');
+            coverTxt.textContent = 'verborgen speler';
+          }
           disc.classList.toggle('playing', !isPaused);
           disc.classList.toggle('spinning', !isPaused);
-
           const pos = (d.position || 0) / 1000;
           timeEl.textContent = fmt(pos);
-
-          // Net gestart maar nog vóór het startpunt? Eén keer doorspoelen.
-          if (!isPaused && needsSeek && pos < startSec - 1) {
-            controller.seek(startSec);
-          }
+          // meteen bij de eerste update naar het startpunt springen
+          if (needsSeek && pos < startSec - 1 && !isPaused) controller.seek(startSec);
           if (pos >= startSec - 1) needsSeek = false;
         });
 
         controller.addListener('error', () =>
-          showErr('Afspelen lukt niet. Log in de browser in bij Spotify voor het hele nummer (anders hoor je een preview).')
-        );
+          showErr('Afspelen lukt niet. Log in de browser in bij Spotify voor het hele nummer.'));
       }
     );
   };
 
+  function tryPlay() {
+    // probeer op alle bekende manieren; niet elke versie van de API ondersteunt alles
+    try { if (needsSeek) controller.seek(startSec); } catch (e) {}
+    try { controller.play(); } catch (e) {}
+    try { if (isPaused) controller.togglePlay(); } catch (e) {}
+    // vangnet: start het na 1,5 s nog steeds niet (mobiel!), toon dan de echte play-knop
+    clearTimeout(watchdog);
+    watchdog = setTimeout(() => { if (isPaused) exposeNativePlay(); }, 1500);
+  }
+
   disc.addEventListener('click', () => {
     if (!ready) return;
-    if (isPaused) {
-      if (needsSeek) {
-        controller.seek(startSec);  // seek start meteen het afspelen op het startpunt
-      } else {
-        controller.resume ? controller.resume() : controller.play();
-      }
-    } else {
-      controller.pause();
-    }
+    if (isPaused) tryPlay();
+    else { try { controller.pause(); } catch (e) {} }
   });
 
   document.getElementById('restart').addEventListener('click', () => {
     if (!ready) return;
     needsSeek = false;
-    controller.seek(startSec);
+    try { controller.seek(startSec); } catch (e) {}
+    if (isPaused) tryPlay();
   });
 })();
 </script>
